@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardMapper">
+
+	<update id="deleteByNo">
+		UPDATE BOARD 
+			SET DEL_YN = 'Y' 
+		<foreach collection="array" item="no" separator="," open="WHERE NO IN (" close=")">
+			#{no}
+		</foreach>
+	</update>
+	
+	<insert id="insert">
+		INSERT INTO BOARD
+		(
+			NO
+			, TITLE
+			, CONTENT
+			, CATEGORY_NO
+			, WRITER_NO
+		) 
+		VALUES
+		(
+			SEQ_BOARD.NEXTVAL
+			, #{title}
+			, #{content}
+			, #{categoryNo}
+			, #{writerNo}
+		)
+	</insert>
+	
+	<insert id="insertBoardAttachment">
+		INSERT ALL
+		<foreach collection="list" item="vo" separator=" ">
+		 INTO BOARD_ATTACHMENT
+		 (
+			 NO
+			 , REF_NO
+			 , ORIGIN_NAME
+			 , CHANGE_NAME
+		 ) 
+		 VALUES 
+		 (
+			 (SELECT FN_GET_BOARD_ATTACHMENT_SEQ_NEXTVAL FROM DUAL)
+			 , SEQ_BOARD.CURRVAL
+			 , #{vo.originName}
+			 , #{vo.changeName}
+		 )
+		</foreach>
+		SELECT * FROM DUAL
+	</insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
